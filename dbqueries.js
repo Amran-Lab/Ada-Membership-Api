@@ -9,11 +9,30 @@ function getEmployees(db, req, res) {
         if (!rows) {
             res.send({ error: "no employees found" })
         }
-        console.log(rows)
         res.send(rows);
     })
 }
 
+
+// Get All Cards
+
+// Get All Transactions
+
+// Get All Transactions by ID
+
+// Get Card By ID
+
+// Get Employee By Id
+
+// Add Employee
+
+// Add Transaction
+
+// Add Card
+
+// Get Balance
+
+// Add Auth Controller
 
 
 
