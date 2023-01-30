@@ -1,0 +1,37 @@
+const sqlite3 = require('sqlite3').verbose();
+let { employeeTable } = require('./sql/employees');
+let { insertEmployees } = require('./sql/insertEmployee');
+
+
+function connect() {
+  let db = new sqlite3.Database('./db/mydb.sqlite', (err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    console.log('Connected to the SQlite database.');
+  });
+  db.exec('PRAGMA foreign_keys = ON;', function(error)  {
+    if (error){
+        console.error("Pragma statement didn't work.")
+    } else {
+        console.log("Foreign Key Enforcement is on.")
+    }
+  });
+  return db;
+}
+
+function init(db) {
+
+
+  db.serialize(() => {
+      db.run(employeeTable, (err) => {
+        if (err) { console.log(err) } else { console.log("Creating table Category") }
+      });
+      db.run(insertEmployees, (err) => {
+        if (err) { console.log(err) } else { console.log("insertCategory") }
+      });
+
+  });
+}
+
+module.exports = { connect, init }
