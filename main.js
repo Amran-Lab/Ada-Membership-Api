@@ -16,18 +16,12 @@ app.use(express.json());
 app.use(express.static(__dirname + '/public'));
 
 app.get('/api/employees', function(req, res) {
-    // Is Registered
-    // Is Signed In
     query.getEmployees(db,req,res)
 
 });
 
-app.get('/', function(req, res) {
-    token = jwt.sign({ _id: '555', name: 'Cool Bans' }, 'SecretCode', {
-        expiresIn : 120 //seconds
-      });
-
-    res.send(token);
+app.get('/api/transactions', function(req, res) {
+    query.getTransactions(db,req,res)
 
 });
 
@@ -38,10 +32,10 @@ app.get('/', function(req, res) {
 app.get('/api/swipe/:id', function(req, res) {
     var cardId = req.params.id
     registered = query.getEmployeeCard(db,req, res, cardId)
+    // TODO SIGN OUT
 
 });
 
-// DONE
 /*
     Card ID
     Employee Id
@@ -51,8 +45,6 @@ app.get('/api/swipe/:id', function(req, res) {
     pin
 */
 app.post('/api/register', function(req, res) {
-    // Is Registered
-    // Is Signed In
     const properties = ['card_id', 'employee_id', 'name', 'email', 'mobile', 'pin'];
 
     const hasAllKeys = properties.every(item => req.body.hasOwnProperty(item));
@@ -64,7 +56,6 @@ app.post('/api/register', function(req, res) {
 
 });
 
-// DONE
 /*
     Card ID
     pin
@@ -79,19 +70,26 @@ app.post('/api/sign-in', function(req, res) {
     }
 
     query.checkPin(db,req,res)
-    // Return JWT
+    // TODO RETURN NAME
 });
 
-app.get('/api/add-funds', function(req, res) {
-    // Check Pin
-    // Return JWT
+/*
+    price
+*/
+app.post('/api/add-funds', auth, function(req, res) {
+    price = req.body.price 
+    cardId = req.user.card_id
+    query.addTransaction(db,req,res, price, cardId)
 });
 
-app.get('/api/purchase', function(req, res) {
-    // Check Pin
-    // Return JWT
+app.post('/api/purchase', auth, function(req, res) {
+    price = -req.body.price 
+    cardId = req.user.card_id
+    query.addTransaction(db,req,res, price, cardId)
 });
 
+//GetEmployeeDetails
+//GetBalance
 
 app.listen(3000, function () {
 

@@ -15,6 +15,18 @@ function getEmployees(db, req, res) {
     })
 }
 
+function getTransactions(db, req, res) {
+    db.all('SELECT * FROM Transactions', (err, rows) => {
+        if (err) {
+            console.error(err.message);
+        }
+        if (!rows) {
+            res.send({ error: "no employees found" })
+        }
+        res.send(rows);
+    })
+}
+
 async function getEmployeeCard(db, req, res, id) {
     db.get(getCardById, [id], (err, rows) => {
         if (err) {
@@ -43,7 +55,7 @@ async function addEmployee(db, req, res, id) {
     })
 }
 
-async function addCard(db, req, res, id) {
+async function addCard(db, req, res) {
     const { card_id, employee_id, pin } = req.body;
     db.run(`INSERT INTO Card(card_id, employee_id, pin) VALUES(?,?,?)`, [card_id, employee_id, pin],
         function(err) {
@@ -69,35 +81,35 @@ async function checkPin(db, req, res) {
             res.status(404).send('Card Not Registered - Please input details')
             return
         }
-        console.log(rows)
+
         if(rows.pin === pin) {
-            token = getToken(card_id);
+            token = getToken(card_id, rows.employee_id);
             return res.status(200).send({card_id: card_id, token: token})
         }
         return res.status(404).send('Incorrect PIN')
     })
 }
 
+async function addTransaction(db, req, res, price, cardId) {
+    db.run(`INSERT INTO Transactions(card_id, value) VALUES(?,?)`, [cardId, price],
+        function(err) {
+        if (err) {
+            console.log('CARD ERROR')
+            console.log(err.message)
 
-// Get All Cards
+            return res.status(404).send('Fail')
+        }
 
-// Get All Transactions
-
-// Get All Transactions by ID
-
-// Get Employee By Id
-
-// Add Employee
-
-// Add Transaction
-
-// Add Card
-
-// Get Balance
-
-// Add Auth Controller
+        res.status(200).send('Transaction Added Successfully')
+    })
+}
 
 
+// Get Employee By Id Return name to check pin
+
+// Calculate Balance
 
 
-module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin }
+
+
+module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin, addTransaction, getTransactions}
