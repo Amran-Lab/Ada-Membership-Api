@@ -1,15 +1,16 @@
-var express = require('express');
-let { auth } = require('./authenticate');
-const jwt = require('jsonwebtoken')
+const express = require('express');
+const { auth } = require('./authenticate');
+const fs = require('fs');
+const filePath = './db/mydb.sqlite';
+const dba = require("./buildDb.js");
+const query = require("./dbQueries.js");
 
-var fs = require('fs');
-var filePath = './db/mydb.sqlite'; 
-fs.unlinkSync(filePath);
+if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+}
 
 var app = express();
 var adminApp = express();
-const dba = require("./rundbbuild.js");
-const query = require("./dbqueries.js");
 let db = dba.connect();
 
 app.use(express.json());
@@ -30,7 +31,6 @@ adminApp.get('/api/transactions', function(req, res) {
 
 });
 
-// Need Sign OUT
 /*
     Card ID
 */
@@ -63,6 +63,7 @@ app.post('/api/register', function(req, res) {
         res.status(404).send('Missing card_id/employee_id/name/email/mobile/pin')
         return
     }
+
     query.addEmployee(db,req,res)
 
 });
@@ -81,7 +82,6 @@ app.post('/api/sign-in', function(req, res) {
     }
 
     query.checkPin(db,req,res)
-    // TODO RETURN NAME
 });
 
 /*
@@ -104,8 +104,6 @@ app.get('/api/balance', auth, function(req, res) {
     query.getBalance(db,req,res, cardId)
 
 });
-
-//GetEmployeeDetails
 
 app.listen(3000, function () {
     dba.init(db);

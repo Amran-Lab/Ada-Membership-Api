@@ -1,10 +1,7 @@
-const sqlite3 = require('sqlite3').verbose();
-let { getAllEmployees } = require('./sql/getAllEmployees');
-let { getCardById } = require('./sql/getCardById');
 let { getToken } = require('./authenticate');
 
 function getEmployees(db, req, res) {
-    db.all(getAllEmployees, (err, rows) => {
+    db.all(`SELECT * FROM Employee`, (err, rows) => {
         if (err) {
             console.error(err.message);
         }
@@ -28,7 +25,7 @@ function getTransactions(db, req, res) {
 }
 
 async function getEmployeeCard(db, req, res, id) {
-    db.get(getCardById, [id], (err, rows) => {
+    db.get(`Select * From Card WHERE card_id = ?`, [id], (err, rows) => {
         if (err) {
             console.error(err.message);
         }
@@ -42,7 +39,7 @@ async function getEmployeeCard(db, req, res, id) {
     })
 }
 
-async function addEmployee(db, req, res, id) {
+async function addEmployee(db, req, res) {
     const { employee_id, name, email,mobile } = req.body;
     db.run(`INSERT INTO Employee(employee_id,name, email, mobile) VALUES(?, ?, ?, ?)`, [employee_id, name, email,mobile],
         function(err) {
@@ -59,9 +56,7 @@ async function addCard(db, req, res) {
     db.run(`INSERT INTO Card(card_id, employee_id, pin) VALUES(?,?,?)`, [card_id, employee_id, pin],
         function(err) {
         if (err) {
-            console.log('CARD ERROR')
             console.log(err.message)
-
             return res.status(404).send({ message: 'Card Already Exists' })
         }
 
@@ -71,7 +66,7 @@ async function addCard(db, req, res) {
 
 async function checkPin(db, req, res) {
     const { card_id, pin } = req.body;
-    db.get(getCardById, [card_id], (err, rows) => {
+    db.get(`Select * From Card WHERE card_id = ?`, [card_id], (err, rows) => {
         if (err) {
             console.error(err.message);
         }
@@ -136,7 +131,5 @@ async function getBalance(db, req, res, cardId) {
         return res.send({balance: total});
     })
 }
-
-// Get Employee By Id Return name to check pin
 
 module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin, addTransaction, getTransactions, getBalance }
