@@ -34,10 +34,10 @@ async function getEmployeeCard(db, req, res, id) {
         }
 
         if (!rows) {
-            res.status(404).send('Card Not Registered - Please input details')
+            res.status(404).send({ message: 'Card Not Registered - Please input details' })
             return
         }
-        res.status(200).send('Please Enter Pin')
+        res.status(200).send({ message: 'Please Enter Pin' })
         return
     })
 }
@@ -47,7 +47,6 @@ async function addEmployee(db, req, res, id) {
     db.run(`INSERT INTO Employee(employee_id,name, email, mobile) VALUES(?, ?, ?, ?)`, [employee_id, name, email,mobile],
         function(err) {
         if (err) {
-            console.log('EMP ERROR')
             console.log(err.message)
         }
 
@@ -63,10 +62,10 @@ async function addCard(db, req, res) {
             console.log('CARD ERROR')
             console.log(err.message)
 
-            return res.status(404).send('Fail')
+            return res.status(404).send({ message: 'Card Already Exists' })
         }
 
-        res.status(200).send('Card Added Successfully')
+        res.status(200).send({ message: 'Card Added Successfully' })
     })
 }
 
@@ -78,15 +77,35 @@ async function checkPin(db, req, res) {
         }
 
         if (!rows) {
-            res.status(404).send('Card Not Registered - Please input details')
-            return
+            return res.status(404).send({ message: 'Card Not Registered - Please input details' })
         }
 
         if(rows.pin === pin) {
-            token = getToken(card_id, rows.employee_id);
-            return res.status(200).send({card_id: card_id, token: token})
+            return welcomeEmployee(db, res, card_id, rows.employee_id)
         }
-        return res.status(404).send('Incorrect PIN')
+
+        return res.status(404).send({ message: 'Incorrect PIN'})
+    })
+}
+
+async function welcomeEmployee(db, res, cardId, employeeId) {
+    db.get(`SELECT name FROM Employee WHERE employee_id = ?`, [employeeId], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+        }
+
+        if (!rows) {
+            return res.status(404).send({ message: 'Employee Not Found' })
+        }
+
+        token = getToken(cardId, employeeId);
+        return res.status(200).send({
+            card_id: cardId, 
+            employee_id: employeeId, 
+            token: token, 
+            name: rows.name,
+            message: 'Welcome ' + rows.name 
+        })
     })
 }
 
@@ -94,27 +113,27 @@ async function addTransaction(db, req, res, price, cardId) {
     db.run(`INSERT INTO Transactions(card_id, value) VALUES(?,?)`, [cardId, price],
         function(err) {
         if (err) {
-            console.log('CARD ERROR')
             console.log(err.message)
-
-            return res.status(404).send('Fail')
+            return res.status(404).send({ message: 'Failed to add Transaction'})
         }
 
-        res.status(200).send('Transaction Added Successfully')
+        return res.status(200).send({ message: 'Transaction Added Successfully'})
     })
 }
 
 async function getBalance(db, req, res, cardId) {
-    console.log(cardId)
     db.all(`SELECT value FROM Transactions WHERE card_id = ?`, [cardId], (err, rows) => {
         if (err) {
             console.error(err.message);
+            return res.status(404).send({ message: 'Error'})
         }
+
         if (!rows) {
-            res.send({ error: "no employees found" })
+            return res.status(200).send({ balance: 0 })
         }
-        let total = rows.reduce((prev, next) => parseFloat(prev) + parseFloat(next.value), 0)
-        res.send({balance: total});
+
+        const total = rows.reduce((prev, next) => parseFloat(prev) + parseFloat(next.value), 0)
+        return res.send({balance: total});
     })
 }
 

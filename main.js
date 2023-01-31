@@ -30,10 +30,16 @@ app.get('/api/transactions', function(req, res) {
     Card ID
 */
 app.get('/api/swipe/:id', function(req, res) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if(token) {
+        res.status(201).send({ message:'Log Out Account and Delete Token' })
+        return
+    }
+
     var cardId = req.params.id
     registered = query.getEmployeeCard(db,req, res, cardId)
-    // TODO SIGN OUT
-
 });
 
 /*

@@ -13,7 +13,7 @@ module.exports.auth = function (req, res, next) {
   
     if (token == null) return res.sendStatus(401)
   
-    jwt.verify(token, 'SecretCode', (err, user) => {
+    jwt.verify(token, 'SecretCode', async (err, user) => {
   
       if (err) return res.sendStatus(403)
   
