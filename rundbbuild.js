@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 let { employeeTable } = require('./sql/employees');
 let { insertEmployees } = require('./sql/insertEmployee');
+let { insertCards } = require('./sql/insertCards');
 let { cardsTable } = require('./sql/cards');
 let { transactionTable} = require('./sql/transaction');
 
@@ -34,6 +35,9 @@ function init(db) {
       });
       db.run(cardsTable, (err) => {
         if (err) { console.log(err) } else { console.log("Creating table Cards") }
+      });
+      db.run(insertCards, (err) => {
+        if (err) { console.log(err) } else { console.log("insert Cards") }
       });
       db.run(transactionTable, (err) => {
         if (err) { console.log(err) } else { console.log("Create Transactions") }
