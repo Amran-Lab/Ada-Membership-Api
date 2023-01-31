@@ -104,12 +104,20 @@ async function addTransaction(db, req, res, price, cardId) {
     })
 }
 
+async function getBalance(db, req, res, cardId) {
+    console.log(cardId)
+    db.all(`SELECT value FROM Transactions WHERE card_id = ?`, [cardId], (err, rows) => {
+        if (err) {
+            console.error(err.message);
+        }
+        if (!rows) {
+            res.send({ error: "no employees found" })
+        }
+        let total = rows.reduce((prev, next) => parseFloat(prev) + parseFloat(next.value), 0)
+        res.send({balance: total});
+    })
+}
 
 // Get Employee By Id Return name to check pin
 
-// Calculate Balance
-
-
-
-
-module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin, addTransaction, getTransactions}
+module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin, addTransaction, getTransactions, getBalance }

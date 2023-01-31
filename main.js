@@ -88,11 +88,15 @@ app.post('/api/purchase', auth, function(req, res) {
     query.addTransaction(db,req,res, price, cardId)
 });
 
+app.get('/api/balance', auth, function(req, res) {
+    cardId = req.user.card_id
+    query.getBalance(db,req,res, cardId)
+
+});
+
 //GetEmployeeDetails
-//GetBalance
 
 app.listen(3000, function () {
-
     dba.init(db);
     console.log('Server is listening on port 3000. Ready to accept requests!');
 });
