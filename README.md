@@ -19,8 +19,8 @@
 The admin requirements are things I believe the API should be able to do eventually however I am not making them part of this MVP.
 ## Assumptions
 
-- An employee can multiple cards. For example if they lose their card they can request a new card and have their balance  transferred and have their old card deactivated. The transfer of balance and card deactivation would be done by an admin.
-
+- An employee can have multiple cards. For example if they lose their card they can request a new card and have their balance  transferred and have their old card deactivated. The transfer of balance and card deactivation would be done by an admin.
+- I assumed the employee Id is also an alpha-numeric 16 digit string
 - The card already has a unique id on the card before registering.
 - You can top up money on the kiosk with cash.
 - As there is a PIN I assumed that after swiping the card the Kiosk will ask for the PIN which the user can then sign in with. This is a change in requirement as it means it no longer shows a welcome message until the employee has inputted their PIN. I did this because the welcome message contains sensitive information such as name.
@@ -33,3 +33,4 @@ The admin requirements are things I believe the API should be able to do eventua
 The first two diagrams contain what an employee can do and an admin may potentially be able to do.
 
 ## ERD
+![ERD IMAGE](ERD.png)
