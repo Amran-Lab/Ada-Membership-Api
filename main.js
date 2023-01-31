@@ -7,6 +7,7 @@ var filePath = './db/mydb.sqlite';
 fs.unlinkSync(filePath);
 
 var app = express();
+var adminApp = express();
 const dba = require("./rundbbuild.js");
 const query = require("./dbqueries.js");
 let db = dba.connect();
@@ -15,12 +16,16 @@ app.use(express.json());
 
 app.use(express.static(__dirname + '/public'));
 
-app.get('/api/employees', function(req, res) {
+adminApp.use(express.json());
+
+adminApp.use(express.static(__dirname + '/public'));
+
+adminApp.get('/api/employees', function(req, res) {
     query.getEmployees(db,req,res)
 
 });
 
-app.get('/api/transactions', function(req, res) {
+adminApp.get('/api/transactions', function(req, res) {
     query.getTransactions(db,req,res)
 
 });
@@ -105,4 +110,8 @@ app.get('/api/balance', auth, function(req, res) {
 app.listen(3000, function () {
     dba.init(db);
     console.log('Server is listening on port 3000. Ready to accept requests!');
+});
+
+adminApp.listen(5000, function () {
+    console.log('Server is listening on port 5000. Ready to accept requests!');
 });
