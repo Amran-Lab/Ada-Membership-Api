@@ -4,6 +4,7 @@ const fs = require('fs');
 const filePath = './db/mydb.sqlite';
 const dba = require("./initDb.js");
 const query = require("./source.js");
+require('dotenv').config()
 
 if (fs.existsSync(filePath)) {
   fs.unlinkSync(filePath);
@@ -24,6 +25,10 @@ adminApp.use(express.static(__dirname + '/public'));
 adminApp.get('/api/employees', function (req, res) {
   query.getEmployees(db, req, res)
 
+});
+
+adminApp.get('/api/cards', function (req, res) {
+  query.getTransactions(db, req, res)
 });
 
 adminApp.get('/api/transactions', function (req, res) {
@@ -110,6 +115,8 @@ app.listen(3000, function () {
   console.log('Server is listening on port 3000. Ready to accept requests!');
 });
 
-adminApp.listen(5000, function () {
-  console.log('Server is listening on port 5000. Ready to accept requests!');
-});
+if (process.env.ENVIRONMENT === 'dev') {
+  adminApp.listen(5000, function () {
+    console.log('Server is listening on port 5000. Ready to accept requests!');
+  });
+}

@@ -12,6 +12,18 @@ function getEmployees(db, req, res) {
   })
 }
 
+function getCard(db, req, res) {
+  db.all('SELECT * FROM Card', (err, rows) => {
+    if (err) {
+      console.error(err.message);
+    }
+    if (!rows) {
+      res.send({ error: "no employees found" })
+    }
+    res.send(rows);
+  })
+}
+
 function getTransactions(db, req, res) {
   db.all('SELECT * FROM Transactions', (err, rows) => {
     if (err) {
@@ -132,4 +144,4 @@ async function getBalance(db, req, res, cardId) {
   })
 }
 
-module.exports = { getEmployees, getEmployeeCard, addEmployee, checkPin, addTransaction, getTransactions, getBalance }
+module.exports = { getEmployees, getEmployeeCard, getCard, addEmployee, checkPin, addTransaction, getTransactions, getBalance }
