@@ -2,7 +2,7 @@
 
 ## Requirements
 
-|Requirementes                          | User      |
+|Requirements                           | User      |
 |---                                    |---        |
 |Register card                          | Employee  |
 |Login                                  | Employee  |
@@ -25,7 +25,7 @@ The admin requirements are things I believe the API should be able to do eventua
 - You can top up money on the kiosk with cash.
 - As there is a PIN I assumed that after swiping the card the Kiosk will ask for the PIN which the user can then sign in with. This is a change in requirement as it means it no longer shows a welcome message until the employee has inputted their PIN. I did this because the welcome message contains sensitive information such as name.
 - The Kiosk can perform basic tasks such as deleting a token and sending a token in the header when making a request. 
-- It will be able to read the status and message of the response and be display a corresponding output to the user.
+- It will be able to read the status and message of the response and display a corresponding output to the user.
 
 ## UML - Diagrams
 ![UML IMAGE](UMLAPI.png)

@@ -32,7 +32,7 @@ adminApp.get('/api/transactions', function(req, res) {
 });
 
 /*
-    Card ID
+    card_id: string
 */
 app.get('/api/swipe/:id', function(req, res) {
     const authHeader = req.headers['authorization']
@@ -48,12 +48,12 @@ app.get('/api/swipe/:id', function(req, res) {
 });
 
 /*
-    Card ID
-    Employee Id
-    name
-    email
-    mobile
-    pin
+    card_id: string
+    employee_id string
+    name: string
+    email: string
+    mobile: number
+    pin: number
 */
 app.post('/api/register', function(req, res) {
     const properties = ['card_id', 'employee_id', 'name', 'email', 'mobile', 'pin'];
@@ -69,11 +69,11 @@ app.post('/api/register', function(req, res) {
 });
 
 /*
-    Card ID
-    pin
+    card_id: string
+    pin: number
 */
 app.post('/api/sign-in', function(req, res) {
-    const properties = ['card_id', 'employee_id', 'name', 'email', 'mobile', 'pin'];
+    const properties = ['card_id', 'pin'];
 
     const hasAllKeys = properties.every(item => req.body.hasOwnProperty(item));
     if (!hasAllKeys) {
@@ -85,7 +85,7 @@ app.post('/api/sign-in', function(req, res) {
 });
 
 /*
-    price
+    price: number
 */
 app.post('/api/add-funds', auth, function(req, res) {
     price = req.body.price 
