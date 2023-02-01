@@ -2,8 +2,8 @@ const express = require('express');
 const { auth } = require('./authenticate');
 const fs = require('fs');
 const filePath = './db/mydb.sqlite';
-const dba = require("./buildDb.js");
-const query = require("./dbQueries.js");
+const dba = require("./initDb.js");
+const query = require("./source.js");
 
 if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
