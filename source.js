@@ -91,8 +91,7 @@ async function checkPin(db, req, res) {
     if (!rows) {
       return res.status(404).send({ message: 'Card Not Registered - Please input details' })
     }
-    console.log('pin ' + pin)
-    console.log(rows.pin)
+
     comparison = await bcrypt.compare(pin.toString(), rows.pin)
     if (comparison) {
       return welcomeEmployee(db, res, card_id, rows.employee_id)
