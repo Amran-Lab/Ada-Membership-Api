@@ -28,7 +28,7 @@ adminApp.get('/api/employees', function (req, res) {
 });
 
 adminApp.get('/api/cards', function (req, res) {
-  query.getTransactions(db, req, res)
+  query.getCards(db, req, res)
 });
 
 adminApp.get('/api/transactions', function (req, res) {

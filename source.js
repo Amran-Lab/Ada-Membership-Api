@@ -1,4 +1,7 @@
 let { getToken } = require('./authenticate');
+const bcrypt = require("bcrypt")
+
+const saltRounds = 10
 
 function getEmployees(db, req, res) {
   db.all(`SELECT * FROM Employee`, (err, rows) => {
@@ -12,7 +15,7 @@ function getEmployees(db, req, res) {
   })
 }
 
-function getCard(db, req, res) {
+function getCards(db, req, res) {
   db.all('SELECT * FROM Card', (err, rows) => {
     if (err) {
       console.error(err.message);
@@ -65,7 +68,9 @@ async function addEmployee(db, req, res) {
 
 async function addCard(db, req, res) {
   const { card_id, employee_id, pin } = req.body;
-  db.run(`INSERT INTO Card(card_id, employee_id, pin) VALUES(?,?,?)`, [card_id, employee_id, pin],
+  salt = await bcrypt.genSalt(saltRounds)
+  hashed = await bcrypt.hash(pin.toString(), salt)
+  db.run(`INSERT INTO Card(card_id, employee_id, pin) VALUES(?,?,?)`, [card_id, employee_id, hashed],
     function (err) {
       if (err) {
         console.log(err.message)
@@ -78,7 +83,7 @@ async function addCard(db, req, res) {
 
 async function checkPin(db, req, res) {
   const { card_id, pin } = req.body;
-  db.get(`Select * From Card WHERE card_id = ?`, [card_id], (err, rows) => {
+  db.get(`Select * From Card WHERE card_id = ?`, [card_id], async (err, rows) => {
     if (err) {
       console.error(err.message);
     }
@@ -86,8 +91,10 @@ async function checkPin(db, req, res) {
     if (!rows) {
       return res.status(404).send({ message: 'Card Not Registered - Please input details' })
     }
-
-    if (rows.pin === pin) {
+    console.log('pin ' + pin)
+    console.log(rows.pin)
+    comparison = await bcrypt.compare(pin.toString(), rows.pin)
+    if (comparison) {
       return welcomeEmployee(db, res, card_id, rows.employee_id)
     }
 
@@ -144,4 +151,4 @@ async function getBalance(db, req, res, cardId) {
   })
 }
 
-module.exports = { getEmployees, getEmployeeCard, getCard, addEmployee, checkPin, addTransaction, getTransactions, getBalance }
+module.exports = { getEmployees, getEmployeeCard, getCards, addEmployee, checkPin, addTransaction, getTransactions, getBalance }
