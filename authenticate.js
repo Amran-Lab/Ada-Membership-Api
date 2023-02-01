@@ -9,15 +9,19 @@ module.exports.getToken = function (cardId, employeeId) {
 }
 
 module.exports.auth = function (req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
+  const header = req.headers['authorization']
 
-  if (token == null) return res.sendStatus(401)
+  if (header == null) {
+    return res.status(401).send({ error: 'Token Not Provided'})
+  }
+
+  token = header.split(' ')[1]
 
   jwt.verify(token, process.env.SECRET_KEY, async (err, user) => {
-
-    if (err) return res.sendStatus(403)
-
+    if (err) {
+      return res.status(403).send({ error: 'Invalid Token'})
+    }
+    
     req.user = user
     next()
   })
