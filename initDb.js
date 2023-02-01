@@ -3,7 +3,7 @@ let { employeeTable } = require('./sql/employees');
 let { insertEmployees } = require('./sql/insertEmployee');
 let { insertCards } = require('./sql/insertCards');
 let { cardsTable } = require('./sql/cards');
-let { transactionTable} = require('./sql/transaction');
+let { transactionTable } = require('./sql/transaction');
 
 
 function connect() {
@@ -13,11 +13,11 @@ function connect() {
     }
     console.log('Connected to the SQlite database.');
   });
-  db.exec('PRAGMA foreign_keys = ON;', function(error)  {
-    if (error){
-        console.error("Pragma statement didn't work.")
+  db.exec('PRAGMA foreign_keys = ON;', function (error) {
+    if (error) {
+      console.error("Pragma statement didn't work.")
     } else {
-        console.log("Foreign Key Enforcement is on.")
+      console.log("Foreign Key Enforcement is on.")
     }
   });
   return db;
@@ -27,21 +27,21 @@ function init(db) {
 
 
   db.serialize(() => {
-      db.run(employeeTable, (err) => {
-        if (err) { console.log(err) } else { console.log("Creating table Employees") }
-      });
-      db.run(insertEmployees, (err) => {
-        if (err) { console.log(err) } else { console.log("insert Employees") }
-      });
-      db.run(cardsTable, (err) => {
-        if (err) { console.log(err) } else { console.log("Creating table Cards") }
-      });
-      db.run(insertCards, (err) => {
-        if (err) { console.log(err) } else { console.log("insert Cards") }
-      });
-      db.run(transactionTable, (err) => {
-        if (err) { console.log(err) } else { console.log("Create Transactions") }
-      });
+    db.run(employeeTable, (err) => {
+      if (err) { console.log(err) } else { console.log("Creating table Employees") }
+    });
+    db.run(insertEmployees, (err) => {
+      if (err) { console.log(err) } else { console.log("insert Employees") }
+    });
+    db.run(cardsTable, (err) => {
+      if (err) { console.log(err) } else { console.log("Creating table Cards") }
+    });
+    db.run(insertCards, (err) => {
+      if (err) { console.log(err) } else { console.log("insert Cards") }
+    });
+    db.run(transactionTable, (err) => {
+      if (err) { console.log(err) } else { console.log("Create Transactions") }
+    });
 
   });
 }
