@@ -24,8 +24,6 @@ function connect() {
 }
 
 function init(db) {
-
-
   db.serialize(() => {
     db.run(employeeTable, (err) => {
       if (err) { console.log(err) } else { console.log("Creating table Employees") }
@@ -42,7 +40,6 @@ function init(db) {
     db.run(transactionTable, (err) => {
       if (err) { console.log(err) } else { console.log("Create Transactions") }
     });
-
   });
 }
 
